@@ -1,6 +1,6 @@
 # Jarkom-Modul-2-C08-2021
 
-Berikut adalah laporan resmi Praktikum Jaringan Komputer Modul 1 tahun 2021
+Berikut adalah laporan resmi Praktikum Jaringan Komputer Modul 2 tahun 2021
 
 Anggota Kelompok C08 :
 
@@ -36,7 +36,7 @@ Anggota Kelompok C08 :
 
 ## 14. Mengatur web www.general.mecha.franky.c08.com hanya bisa diakses dengan port 15000 dan port 15500
 
-## 15. Memberi autentikasi pada www.general.mecha.franky.c08.com dengan username luffy dan password onepiece 
+## 15. Memberi autentikasi pada www.general.mecha.franky.c08.com dengan username luffy dan password onepiece
 
 ## 16. Setiap kali mengakses IP Skypie akan dialihkan secara otomatis ke www.franky.c08.com
 
