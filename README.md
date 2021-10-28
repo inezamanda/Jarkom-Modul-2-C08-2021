@@ -23,17 +23,83 @@ Anggota Kelompok C08 :
 ## 7. Buatkan subdomain melalui Water7 dengan nama general.mecha.franky.c08.com dengan alias www.general.mecha.franky.c08.com yang mengarah ke Skypie
 
 ## 8. Konfigurasi Webserver dengan domain www.franky.c08.com dan DocumentRoot pada /var/www/franky.c08.com.
+1. Pindah ke direktori `/etc/apache2/sites-available` lalu *copy* file **000-default.conf** ke **franky.c08.com.conf** dengan perintah 
+    ```
+    cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/franky.c08.com.conf
+    ```
+2. Edit file **franky.c08.com.conf** sehingga menjadi
+    ![8.1](assets/8a.png)
+3. Aktifkan konfigurasi `a2ensite franky.c08.com.conf` 
+4. Pindah ke direktori `/var/www` lalu download file dengan command `git config --global http.sslVerify false` lalu `git clone https://github.com/FeinardSlim/Praktikum-Modul-2-Jarkom.git` dan unzip file
+    ![8.2](assets/8b.png)
+5. Restart apache dengan `service apache2 restart`
+6. Ketika mengakses **www.franky.c08.com** atau **www.franky.c08.com/index.php/home** maka akan mendapat tampilan seperti berikut
+    ![8.3](assets/8c.png)
 
 ## 9. Mengubah url www.franky.c08.com/index.php/home dapat menjadi menjadi www.franky.c08.com/home
+1. Jalankan perintah `a2enmod rewrite`
+2. Melakukan konfigurasi pada server dengan menambahkan
+    ```
+    <Directory /var/www/semeruc02.pw>
+        Options +FollowSymLinks -Multiviews
+        AllowOverride All
+    </Directory>
+    ```
+    pada **franky.c08.com.conf** seperti berikut
+    ![9.1](assets/9a.png)
+3. Pindah ke direktori `/var/www/franky.c08.com` dan buat file **.htaccess** lalu masukkan 
+    ```
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^home$ index.php/home
+    ```
+    seperti berikut
+    ![9.2](assets/9b.png)
+4. Restart apache dengan `service apache2 restart`
+5. Ketika mengakses **www.franky.c08.com/home** maka akan mendapat tampilan seperti berikut
+    ![9.3](assets/9c.png)
 
 ## 10. Konfigurasi subdomain www.super.franky.c08.com Setelah itu, pada subdomain www.super.franky.c08.com, Luffy membutuhkan penyimpanan aset yang memiliki DocumentRoot pada /var/www/super.franky.c08.com.
+1. Edit file **franky.c08.com.conf** sehingga menjadi
+    ![10.1](assets/10a.png)
+2. Restart apache dengan `service apache2 restart`
+3. Ketika mengakses **www.super.franky.c08.com** maka akan mendapat tampilan seperti berikut
+    ![10.2](assets/10b.png)
 
 ## 11. Akan tetapi, pada folder /public hanya dapat melakukan directory listing saja.
+1. Konfigurasi file **franky.c08.com.conf** dengan menambahkan
+    ```
+    <Directory /var/www/super.franky.c08.com/public>
+        Options +Indexes
+    </Directory>
+    ```
+    sehingga menjadi
+    ![11.1](assets/11a.png)
+2. Ketika mengakses **www.super.franky.c08.com/public** maka akan mendapat tampilan seperti berikut
+    ![11.2](assets/11b.png)
 
 ## 12. Mengganti error default dari apache menjadi error file 404.html pada folder/error.
+1. Menambahkan konfigurasi berikut pada **franky.c08.com.conf**
+    ```
+    ErrorDocument 404 /error/404.html
+    ```
+    sehingga menjadi
+    ![12.1](assets/12a.png)
+2. Ketika mengakses url invalid seperti **www.super.franky.c08.com/halo** maka akan mendapat tampilan seperti berikut
+    ![12.2](assets/12b.png)
 
 ## 13. Konfigurasi virtual host agar dapat mengakses file asset www.super.franky.c08.com/public/js menjadi www.super.franky.c08.com/js.
- 
+1. Jika mengakses **www.super.franky.c08.com/public/js** maka mendapatkan tampilan sebagai berikut
+    ![13.1](assets/13a.png)
+2. Edit file **franky.c08.com.conf** dengan menambahkan
+    ```
+    Alias "/js" "/var/www/super.franky.c08.com/public/js"
+    ```
+    sehingga menjadi
+    ![13.2](assets/13b.png)
+- Ketika mengakses **www.super.franky.c08.com/js** maka akan mendapatkan tampilan seperti berikut
+    ![13.3](assets/13c.png)
+
 ## 14. Mengatur web www.general.mecha.franky.c08.com hanya bisa diakses dengan port 15000 dan port 15500
 Langkah - langkah :
 1. Membuat konfigurasi Web Server di /etc/apache2/sites-available/franky.c08.com.conf, tambahkan potongan kode berikut.
