@@ -19,18 +19,18 @@ Anggota Kelompok C08 :
 8. Tunggu sampai loading selesai
 9. Jika berhasil akan menampilkan tampilan yang mirip dengan ini
     ![1.1](assets/1a.png)
-11. Klik kanan dan `change hostname` menjadi `Foosha`
+10. Klik kanan dan `change hostname` menjadi `Foosha`
     ![1.2](assets/1b.png)
-13. Klik kanan lagi dan `change symbol` menjadi symbol `router`
+11. Klik kanan lagi dan `change symbol` menjadi symbol `router`
     ![1.3](assets/1c.png)
-15. Lakukanlah langkah 6 hingga 10 untuk `LogueTown`, `Alabasta`, `EniesLobby`, `Water7`, dan `Skypie`. Sehingga menjadi seperti pada gambar
+12. Lakukanlah langkah 6 hingga 10 untuk `LogueTown`, `Alabasta`, `EniesLobby`, `Water7`, dan `Skypie`. Sehingga menjadi seperti pada gambar
     ![1.4](assets/1d.png)
-17. Jika sudah klik tombol `Add a node` di samping kiri lagi
-18. Tarik `NAT` dan dua `Switch` ke area kosong
+13. Jika sudah klik tombol `Add a node` di samping kiri lagi
+14. Tarik `NAT` dan dua `Switch` ke area kosong
     ![1.5](assets/1e.png)
-19. Gunakan menu `Add a Link` dan tambahkan link seperti pada gambar berikut pada setiap node
+15. Gunakan menu `Add a Link` dan tambahkan link seperti pada gambar berikut pada setiap node
     ![1.6](assets/1f.png)
-21. Lalu kita setting network masing-masing node dengan fitur Edit network configuration seperti yang ditunjukkan disini sebelumnya, kita bisa menghapus semua settingnya dan  mengisi dengan settingan di bawah
+16. Lalu kita setting network masing-masing node dengan fitur Edit network configuration seperti yang ditunjukkan disini sebelumnya, kita bisa menghapus semua settingnya dan  mengisi dengan settingan di bawah
   - Foosha
   ```
   auto eth0
@@ -86,30 +86,127 @@ iface eth0 inet static
 	netmask 255.255.255.0
 	gateway 10.18.2.1
   ```
-22. Restart semua node
-23. Topologi yang dibuat sudah bisa berjalan secara lokal, tetapi kita belum bisa mengakses jaringan keluar. Maka kita perlu melakukan beberapa hal.
-24. Ketikkan `vim .bashrc` pada router `Foosha` dan masukkan command berikut
+17. Restart semua node
+18. Topologi yang dibuat sudah bisa berjalan secara lokal, tetapi kita belum bisa mengakses jaringan keluar. Maka kita perlu melakukan beberapa hal.
+19. Ketikkan `vim .bashrc` pada router `Foosha` dan masukkan command berikut
    ```
    iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE -s 10.18.0.0/16
    ```
-26. Ketikkan command `cat /etc/resolv.conf` di `Foosha` kemudian ingat ingat nameservernya
-27. Pada node LogueTown, Alabasta, EniesLobby, Water7, dan Skypie. Ketikkan command `vim .bashrc` kemudian masukkan command 
+20. Ketikkan command `cat /etc/resolv.conf` di `Foosha` kemudian ingat ingat nameservernya
+21. Pada node LogueTown, Alabasta, EniesLobby, Water7, dan Skypie. Ketikkan command `vim .bashrc` kemudian masukkan command 
    ```
    echo nameserver 192.168.122.1 > /etc/resolv.conf
    ```
-29. Semua node sekarang seharusnya sudah bisa melakukan ping ke google, yang artinya adalah sudah tersambung ke internet
+22. Jalankan ulang projectnya
+23. Semua node sekarang seharusnya sudah bisa melakukan ping ke google, yang artinya adalah sudah tersambung ke internet
 ## 2. Buat website utama dengan mengakses franky.c08.com dengan alias www.franky.c08.com pada folder kaizoku
+1. Buka WebConsole `EniesLobby`, dan `Water7`. Ketikkan `vim .bashrc` dan masukkan command berikut
+  ```
+  apt-get update
+  apt-get install bind9 -y
+  ```
+2. Buka WebConsole `LogueTown` ,dan `Alabasta`. Ketikkan `vim .bashrc` dan masukkan command berikut
+ ```
+ apt-get update
+ apt-get install dnsutils -y
+ ```
+3. Jalankan ulang projectnya
+4. Masukkan command berikut pada `EniesLobby`
+  ```
+ vim /etc/bind/named.conf.local
+  ```
+5. Isikan configurasi zone domain **franky.c08.com** sesuai dengan syntax berikut:
+  ```
+  zone "franky.c08.com" {
+	type master;
+	file "/etc/bind/kaizoku/franky.c08.com";
+};
+  ```
+6. Buat folder **kaizoku** di dalam /etc/bind
+  ```
+  mkdir /etc/bind/kaizoku
+  ```
+7. Copykan file `db.local` pada path `/etc/bind` ke dalam folder **kaizoku** yang baru saja dibuat dan ubah namanya menjadi **franky.c08.com**
+  ```
+  cp /etc/bind/db.local /etc/bind/kaizoku/franky.c08.com
+  ```
+8. Buka file **franky.c08.com** dan edit seperti gambar berikut dengan IP 10.18.2.2 dan IP 10.18.2.4 serta record CNAME `www`
+   ![2.1](assets/2a.png)
+9. Restart bind9 dengan command `service bind9 restart`
+10. Comment nameserver `Foosha` pada `etc/resolv.conf` di node `LogueTown` dan `Alabasta` kemudian tambahkan `nameserver 10.18.2.2`
+11. Kemudian test dengan cara ping IP `franky.c08.com` dan `www.franky.c08.com` pada `Loguetown` atau `Alabasta`
 
 ## 3. Buat subdomain super.franky.c08.com dengan alias www.super.franky.c08.com yang diatur DNS nya di EniesLobby dan mengarah ke Skypie
+1. Jalankan command `vim /etc/bind/kaizoku/franky.c08.com` dan edit seperti gambar berikut untuk membuat subdomain dan aliasnya
+  ![3.1](assets/3a.png)
+2. Restart bind9 dengan command `service bind9 restart`
+3. Kemudian test dengan cara ping IP `super.franky.c08.com` dan `www.super.franky.c08.com` pada `Loguetown` atau `Alabasta`
 
 ## 4. Buat juga reverse domain untuk domain utama
-
+1. Jalankan command `vim /etc/bind/named.conf.local` pada `EniesLobby`
+2. Lalu tambahkan konfigurasi berikut ke dalam file `named.conf.local` dibawah zone `franky.c08.com`. Tambahkan reverse IP `10.18.2` yaitu `2.18.10`. 
+ ```
+ zone "2.18.10.in-addr.arpa" {
+    type master;
+    file "/etc/bind/kaizoku/2.18.10.in-addr.arpa";
+};
+ ```
+3. Copykan file `db.local` pada path `/etc/bind` ke dalam folder **kaizoku** yang baru saja dibuat dan ubah namanya menjadi **2.18.10.in-addr.arpa**
+4. Edit file **2.18.10.in-addr.arpaa** menjadi seperti gambar di bawah ini
+  ![4.1](assets/4a.png)
+5. Restart bind9 dengan command `service bind9 restart`
+6. Test dengan cara mengetikkan command `host -t PTR "10.18.2.2"`. Jika muncul seperti pada gambar berarti benar.
+  ![4.2](assets/4b.png)
 ## 5. Buat Water7 sebagai DNS Slave untuk domain utama
+1. Edit file `/etc/bind/named.conf.local` pada `EniesLobby` tepatnya pada zone `franky.c08.com` dan sesuaikan dengan syntax berikut
+ ```
+ zone "franky.c08.com" {
+        type master;
+        notify yes;
+        also-notify { 10.18.2.3; };
+        allow-transfer { 10.18.2.3; };
+        file "/etc/bind/kaizoku/franky.c08.com";
+};
+ ```
+2. Restart bind9 `EniesLobby` dengan command `service bind9 restart`
+3. Kemudian buka file `/etc/bind/named.conf.local` pada `Water7` dan tambahkan syntax berikut:
+ ```
+ zone "franky.c08.com" {
+    type slave;
+    masters { 10.18.2.2; };
+    file "/var/lib/bind/franky.c08.com";
+};
+ ```
+4. Restart bind9 `Water7` dengan command `service bind9 restart`
+5. Test dengan cara mematikan bind9 pada `EniesLobby` yaitu dengan mengetikkan comman `service bind9 stop`
+6. Di node `LogueTown` dan `Alabasta` tambahkan `nameserver 10.18.2.3`.
+7. Lalu ping ke semua domain atau subdomain yang telah dibuat.
 
 ## 6. Setelah itu terdapat subdomain mecha.franky.c08.com dengan alias www.mecha.franky.c08.com yang didelegasikan dari EniesLobby ke Water7 dengan IP menuju ke Skypie dalam folder sunnygo
-
+1. Pada `EniesLobby`, edit file `/etc/bind/kaizoku/franky.c08.com` dan ubah menjadi seperti di bawah ini.
+  ![6.1](assets/6a.png)
+2. Kemudian edit file `/etc/bind/named.conf.options` pada `EniesLobby`.
+3. Kemudian comment `dnssec-validation auto;` dan tambahkan `allow-query{any;};`
+4. Restart bind9 `EniesLobby` dengan command `service bind9 restart`
+5. Lakukan langkah kedua dan ketiga pada `Water7`
+6. Lalu edit file `/etc/bind/named.conf.local` pada `Water7` tambahkan syntax berikut:
+ ```
+ zone "mecha.franky.c08.com" {
+        type master;
+        file "/etc/bind/sunnygo/mecha.franky.c08.com";
+};
+ ```
+7. Kemudian buatlah folder `sunnygo` pada `Water7` dengan mengetikkan command `mkdir /etc/bind/sunnygo`
+8. Dan ketikkan command `cp /etc/bind/db.local /etc/bind/sunnygo/mecha.franky.c08.com` pada `Water7`
+9. Kemudian edit file `mecha.franky.c08.com` pada `Water7` menjadi seperti dibawah ini
+  ![6.2](assets/6b.png)
+10. Restart bind9 `Water7` dengan command `service bind9 restart`
+11. Kemudian test dengan cara ping IP `mecha.franky.c08.com` dan `www.mecha.franky.c08.com` pada `Loguetown` atau `Alabasta`
 ## 7. Buatkan subdomain melalui Water7 dengan nama general.mecha.franky.c08.com dengan alias www.general.mecha.franky.c08.com yang mengarah ke Skypie
-
+1. Jalankan command `vim /etc/bind/kaizoku/mecha.franky.c08.com` pada `Water7` dan edit seperti gambar berikut untuk membuat subdomain dan aliasnya
+  ![6.1](assets/7a.png)
+2. Restart bind9 `Water7` dengan command `service bind9 restart`
+3. Kemudian test dengan cara ping IP `franky.c08.com` dan `www.franky.c08.com` pada `Loguetown` atau `Alabasta`
 ## 8. Konfigurasi Webserver dengan domain www.franky.c08.com dan DocumentRoot pada /var/www/franky.c08.com.
 1. Pindah ke direktori `/etc/apache2/sites-available` lalu *copy* file **000-default.conf** ke **franky.c08.com.conf** dengan perintah 
     ```
