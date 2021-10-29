@@ -155,7 +155,7 @@ iface eth0 inet static
 4. Edit file **2.18.10.in-addr.arpaa** menjadi seperti gambar di bawah ini
   ![4.1](assets/4a.png)
 5. Restart bind9 dengan command `service bind9 restart`
-6. Test dengan cara mengetikkan command `host -t PTR "10.18.2.2"`. Jika muncul seperti pada gambar berarti benar.
+6. Test dengan cara mengetikkan command `host -t PTR "10.18.2.2"` pada `Loguetown`. Jika muncul seperti pada gambar berarti benar.
   ![4.2](assets/4b.png)
 ## 5. Buat Water7 sebagai DNS Slave untuk domain utama
 1. Edit file `/etc/bind/named.conf.local` pada `EniesLobby` tepatnya pada zone `franky.c08.com` dan sesuaikan dengan syntax berikut
