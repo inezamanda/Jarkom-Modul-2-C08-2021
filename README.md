@@ -15,7 +15,7 @@ Anggota Kelompok C08 :
 4. Masukkan nama `project` 
 5. Klik `Add project`
 6. Klik tombol `Add a node` di samping kiri
-7. Lalu tarik `ubuntu-`1 ke area kosong di halaman
+7. Lalu tarik `ubuntu-1` ke area kosong di halaman
 8. Tunggu sampai loading selesai
 9. Jika berhasil akan menampilkan tampilan yang mirip dengan ini
     ![1.1](assets/1a.png)
