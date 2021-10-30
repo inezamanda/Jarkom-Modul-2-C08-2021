@@ -206,7 +206,7 @@ iface eth0 inet static
 1. Jalankan command `vim /etc/bind/kaizoku/mecha.franky.c08.com` pada `Water7` dan edit seperti gambar berikut untuk membuat subdomain dan aliasnya
   ![6.1](assets/7a.png)
 2. Restart bind9 `Water7` dengan command `service bind9 restart`
-3. Kemudian test dengan cara ping IP `franky.c08.com` dan `www.franky.c08.com` pada `Loguetown` atau `Alabasta`
+3. Kemudian test dengan cara ping IP `general.mecha.franky.c08.com` dan `www.general.mecha.franky.c08.com` pada `Loguetown` atau `Alabasta`
 ## 8. Konfigurasi Webserver dengan domain www.franky.c08.com dan DocumentRoot pada /var/www/franky.c08.com.
 1. Pindah ke direktori `/etc/apache2/sites-available` lalu *copy* file **000-default.conf** ke **franky.c08.com.conf** dengan perintah 
     ```
